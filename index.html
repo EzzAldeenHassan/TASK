@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Укорачиватель ссылок</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">Укорачиватель ссылок</h1>
+    <form id="linkForm" class="form-inline mt-3">
+        <input type="url" id="longUrl" class="form-control mb-2 mr-sm-2" placeholder="Введите URL" required>
+        <button type="submit" class="btn btn-primary mb-2">Сократить URL</button>
+    </form>
+    <div id="result" class="mt-3"></div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#linkForm').on('submit', function(event) {
+        event.preventDefault();
+        var longUrl = $('#longUrl').val();
+        var accessToken = 'ВАШ_BITLY_ТОКЕН'; // Замените на ваш API токен от Bitly
+
+        $.ajax({
+            url: 'https://api-ssl.bitly.com/v4/shorten',
+            type: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify({ "long_url": longUrl }),
+            dataType: 'json',
+            success: function(response) {
+                $('#result').html('Сокращенный URL: <a href="' + response.link + '" target="_blank">' + response.link + '</a>');
+            },
+            error: function() {
+                $('#result').text('Ошибка при сокращении URL.');
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>
